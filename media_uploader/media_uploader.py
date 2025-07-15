@@ -50,6 +50,11 @@ class MediaUploader(commands.Cog):
 
     @commands.Cog.listener()
     async def on_thread_reply(self, thread, from_mod: bool, message: discord.Message, anonymous: bool, plain: bool):
+        print(f"on_thread_reply: {thread}")
+        print(f"on_thread_reply: {from_mod}")
+        print(f"on_thread_reply: {message}")
+        print(f"on_thread_reply: {anonymous}")
+        print(f"on_thread_reply: {plain}")
         await self._save_attachments(message)
         # Update attachment URLs in database if message has attachments
         if message.attachments:
