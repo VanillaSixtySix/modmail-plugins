@@ -37,7 +37,7 @@ class MediaUploader(commands.Cog):
                     None,
                     lambda: self.r2_client.put_object(
                         Bucket=self.bucket_name,
-                        Key=f"attachments/{file_name}",
+                        Key=f"{file_name}",
                         Body=attachment_data,
                         ContentType=attachment.content_type or 'application/octet-stream'
                     )
@@ -46,7 +46,7 @@ class MediaUploader(commands.Cog):
                 # Update attachment info
                 self.updated_attachments[attachment.id] = attachment
                 self.updated_attachments[attachment.id].filename = file_name
-                self.updated_attachments[attachment.id].url = f"{self.base_url}/attachments/{file_name}"
+                self.updated_attachments[attachment.id].url = f"{self.base_url}/{file_name}"
 
     @commands.Cog.listener()
     async def on_thread_reply(self, thread, from_mod: bool, message: discord.Message, anonymous: bool, plain: bool):
