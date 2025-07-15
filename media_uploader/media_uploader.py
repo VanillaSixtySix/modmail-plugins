@@ -4,6 +4,7 @@ import asyncio
 import boto3
 import io
 import os
+import logging
 
 class MediaUploader(commands.Cog):
     def __init__(self, bot):
@@ -20,6 +21,8 @@ class MediaUploader(commands.Cog):
         )
         self.bucket_name = os.getenv('S3_BUCKET')
         self.base_url = os.getenv('S3_CUSTOM_DOMAIN')
+
+        logging.info(f"Initialized R2 client with bucket: {self.bucket_name} and base URL: {self.base_url}")
 
     updated_attachments = {}
 
