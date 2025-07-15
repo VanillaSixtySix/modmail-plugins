@@ -50,15 +50,31 @@ class MediaUploader(commands.Cog):
 
     @commands.Cog.listener()
     async def on_thread_reply(self, thread, from_mod: bool, message: discord.Message, anonymous: bool, plain: bool):
-        print(f"on_thread_reply: {thread}")
-        print(f"on_thread_reply: {from_mod}")
-        print(f"on_thread_reply: {message}")
-        print(f"on_thread_reply: {anonymous}")
-        print(f"on_thread_reply: {plain}")
         await self._save_attachments(message)
         # Update attachment URLs in database if message has attachments
         if message.attachments:
             await self.update_attachment_urls(thread.channel.id)
+
+    @commands.Cog.listener()
+    async def on_message(self, message: discord.Message):
+        # Skip if message is from a bot
+        if message.author.bot:
+            return
+        
+        # Check if this message is in a Modmail thread channel
+        if await self._is_modmail_thread(message.channel):
+            # Process attachments if any
+            if message.attachments:
+                await self._save_attachments(message)
+                await self.update_attachment_urls(message.channel.id)
+
+    async def _is_modmail_thread(self, channel):
+        """Check if a channel is a Modmail thread by checking if it's in a category containing 'modmail'"""
+        if not hasattr(channel, 'category') or channel.category is None:
+            return False
+            
+        category_name = channel.category.name.lower()
+        return 'modmail' in category_name
 
     @commands.Cog.listener()
     async def on_thread_close(self, thread, closer, silent: bool, delete_channel: bool, message: str, scheduled: bool):
